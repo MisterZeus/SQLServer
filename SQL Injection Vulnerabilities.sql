@@ -1,8 +1,8 @@
 -- https://github.com/bertwagner/SQLServer/blob/master/SQL%20Injection%20Vulnerabilities.sql
 
 -- How to search your database for SQL Injection vulnerabilities
--- It's very difficult to find with 100% accuracy vulnerabilities, but we can do our best
--- Searches stored procedures, udfs, views for parameter plus + sign for concatenation as well as exec or usp_exec
+-- It's very difficult to find vulnerabilities with 100% accuracy, but we can try our best.
+-- Searches stored procedures, udfs, views for parameter and "+" sign for concatenation, as well as "exec" or "usp_exec"
 -- check for things that don't use quotename
 
 -- Why is finding vulnerabilities important?  Because at the end of the day, if data is lost or leaked, you are the one to blame.  
@@ -33,14 +33,13 @@ WHERE
 		CHAR(12),''),CHAR(13),''),CHAR(14),''),CHAR(160),''),' ','')
 	LIKE '%+@%'
 	AND	
-	( -- Only if executes a dynamic string
+	( -- Only if it executes a dynamic string
 		r.Definition LIKE '%EXEC(%'
 		OR r.Definition LIKE '%EXECUTE%'
 		OR r.Definition LIKE '%sp_executesql%'
 	);
 
-
--- Search for parameters that look like they could hvae injection values in them
+-- Search for parameters that look like they could have injection values in them!
 
 WITH XMLNAMESPACES (DEFAULT 'http://schemas.microsoft.com/sqlserver/2004/07/showplan')
 
